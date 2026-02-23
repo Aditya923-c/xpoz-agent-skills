@@ -19,11 +19,48 @@ Activate when the user asks:
 - "Is the reaction to [EVENT] positive or negative?"
 - "Social media opinion on [TOPIC]"
 
-## Prerequisites
+## Setup & Authentication
 
-**Xpoz API Key** — get one free at [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=social-sentiment-analyzer)
+Before fetching data, verify Xpoz access is configured. Try them in order:
 
-The skill works via **MCP** (if configured) or **SDK** (Python/TypeScript). Check which is available and use accordingly.
+### Check 1: MCP Server (preferred)
+If you have MCP tool access, check if `xpoz` tools are available (e.g., `getTwitterPostsByKeywords`). If yes, authentication is already handled — skip to Step 1.
+
+### Check 2: SDK via Environment Variable
+```bash
+echo $XPOZ_API_KEY
+```
+If set, the SDK will authenticate automatically:
+```python
+from xpoz import XpozClient
+client = XpozClient()  # auto-reads XPOZ_API_KEY
+```
+
+### Check 3: Nothing Configured
+If neither MCP nor env var is available, ask the user to:
+1. Get a free API key at [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=social-sentiment-analyzer) (100K results/month free)
+2. Then EITHER:
+   - **Set env var:** `export XPOZ_API_KEY=<their-key>` and use the SDK
+   - **Configure MCP:** Add to `~/.claude.json` (or agent's MCP config):
+     ```json
+     {
+       "mcpServers": {
+         "xpoz": {
+           "url": "https://mcp.xpoz.ai/mcp",
+           "transport": "http-stream",
+           "headers": { "Authorization": "Bearer <their-key>" }
+         }
+       }
+     }
+     ```
+   - **Pass directly:** `XpozClient("<their-key>")` in Python or `new XpozClient({ apiKey: "<their-key>" })` in TypeScript
+
+### Auth Errors
+If you get `AuthenticationError` or 401 responses:
+- Verify the API key is valid at [xpoz.ai/settings](https://xpoz.ai/settings)
+- Check the key hasn't expired
+- Ensure no extra whitespace in the key
+
 
 ## Step-by-Step Instructions
 
