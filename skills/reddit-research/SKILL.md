@@ -22,44 +22,139 @@ Activate when the user asks:
 
 ## Setup & Authentication
 
-Before fetching data, verify Xpoz access is configured. Try these in order:
+Before fetching data, ensure Xpoz access is configured. Follow these checks in order.
 
-### Check 1: MCP Server (preferred for AI agents)
+### Check 1: Already authenticated?
 
-If you have MCP tool access, test if Xpoz is already authenticated:
+**If you have MCP tools**, try calling any Xpoz tool (e.g., `checkAccessKeyStatus`). If it works → skip to Step 1.
+
+**If you have the SDK**, try:
+```python
+from xpoz import XpozClient
+client = XpozClient()  # reads XPOZ_API_KEY env var
+```
+If this succeeds without error → skip to Step 1.
+
+If neither works, you need to authenticate. Choose the path that fits your environment:
+
+---
+
+### Path A: MCP via mcporter (OpenClaw agents)
+
+If `mcporter` is available:
 
 ```bash
 mcporter call xpoz.checkAccessKeyStatus
 ```
 
-- If `hasAccessKey: true` → **Xpoz is ready.** Skip to Step 1.
-- If it fails or the server isn't configured → set it up:
+If `hasAccessKey: true` → ready. If not:
 
-**Add the server:**
 ```bash
 mcporter config add xpoz https://mcp.xpoz.ai/mcp --auth oauth
 ```
 
-**Authenticate (local machine with browser):**
-```bash
-mcporter config login xpoz
-```
-This opens the browser for Google sign-in. Tell the user:
-> "A browser window should open — just sign in with your Google account and click Authorize."
+Then authenticate — generate the OAuth URL and send it to the user:
 
-**Authenticate (remote/headless server):**
-If there's no browser, generate an OAuth URL and send it to the user:
-```bash
-mcporter config login xpoz
-```
-Copy the authorization URL from the output, send it to the user, and wait for them to paste back the authorization code.
+**Step 1: Generate authorization URL**
+```python
+import secrets, hashlib, base64, urllib.parse, json, urllib.request, os
 
-**Verify:**
-```bash
-mcporter call xpoz.checkAccessKeyStatus
+verifier = secrets.token_urlsafe(64)
+challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b'=').decode()
+state = secrets.token_urlsafe(32)
+
+# Dynamic client registration
+reg_req = urllib.request.Request(
+    'https://mcp.xpoz.ai/oauth/register',
+    data=json.dumps({
+        'client_name': 'Agent Skills',
+        'redirect_uris': ['https://www.xpoz.ai/oauth/openclaw'],
+        'grant_types': ['authorization_code'],
+        'response_types': ['code'],
+        'token_endpoint_auth_method': 'none',
+    }).encode(),
+    headers={'Content-Type': 'application/json'},
+)
+reg_resp = json.loads(urllib.request.urlopen(reg_req).read())
+
+params = urllib.parse.urlencode({
+    'response_type': 'code',
+    'client_id': reg_resp['client_id'],
+    'code_challenge': challenge,
+    'code_challenge_method': 'S256',
+    'redirect_uri': 'https://www.xpoz.ai/oauth/openclaw',
+    'state': state,
+    'scope': 'mcp:tools',
+    'resource': 'https://mcp.xpoz.ai/',
+})
+
+auth_url = 'https://mcp.xpoz.ai/oauth/authorize?' + params
+
+# Save state for token exchange
+os.makedirs(os.path.expanduser('~/.cache/xpoz-oauth'), exist_ok=True)
+with open(os.path.expanduser('~/.cache/xpoz-oauth/state.json'), 'w') as f:
+    json.dump({'verifier': verifier, 'state': state, 'client_id': reg_resp['client_id'],
+               'redirect_uri': 'https://www.xpoz.ai/oauth/openclaw'}, f)
+
+print(auth_url)
 ```
 
-For **Claude Code** users, Xpoz can also be added to `~/.claude.json`:
+**Step 2: Send the URL to the user**
+
+Tell them:
+> "I need to connect to Xpoz for social media data. Please open this link and sign in:
+>
+> [auth_url]
+>
+> After authorizing, you'll see a code. Paste it back to me here."
+
+**Step 3: WAIT for the user to reply with the code.** Do not proceed until they respond.
+
+**Step 4: Exchange the code for a token**
+
+Once the user provides the code (either a raw code or a URL containing `?code=...`), extract the code and exchange it:
+
+```python
+import json, urllib.request, urllib.parse, subprocess, os
+
+with open(os.path.expanduser('~/.cache/xpoz-oauth/state.json')) as f:
+    oauth = json.load(f)
+
+code = "THE_CODE_FROM_USER"  # Extract from user's reply
+
+data = urllib.parse.urlencode({
+    'grant_type': 'authorization_code',
+    'code': code,
+    'redirect_uri': oauth['redirect_uri'],
+    'client_id': oauth['client_id'],
+    'code_verifier': oauth['verifier'],
+}).encode()
+
+req = urllib.request.Request(
+    'https://mcp.xpoz.ai/oauth/token',
+    data=data,
+    headers={'Content-Type': 'application/x-www-form-urlencoded'},
+)
+resp = json.loads(urllib.request.urlopen(req).read())
+token = resp['access_token']
+
+# Configure mcporter with the token (token is never printed)
+subprocess.run(['mcporter', 'config', 'remove', 'xpoz'], capture_output=True)
+subprocess.run(['mcporter', 'config', 'add', 'xpoz', 'https://mcp.xpoz.ai/mcp',
+                '--header', f'Authorization=Bearer {token}'], check=True)
+
+# Clean up
+os.remove(os.path.expanduser('~/.cache/xpoz-oauth/state.json'))
+print("Xpoz configured successfully")
+```
+
+**Step 5: Verify** with `mcporter call xpoz.checkAccessKeyStatus` → should return `hasAccessKey: true`.
+
+---
+
+### Path B: MCP via Claude Code config
+
+For Claude Code users without mcporter, add to `~/.claude.json`:
 ```json
 {
   "mcpServers": {
@@ -70,43 +165,49 @@ For **Claude Code** users, Xpoz can also be added to `~/.claude.json`:
   }
 }
 ```
-Authentication is handled via OAuth on first use — no API keys needed in the config.
+Claude Code handles OAuth automatically on first tool call — the user just needs to authorize in their browser when prompted.
 
-### Check 2: SDK (for coding tasks)
+---
 
-Install the SDK and set your API key:
+### Path C: SDK (Python or TypeScript)
+
+Ask the user:
+> "I need a Xpoz API key to access social media data. Please go to https://xpoz.ai/get-token (it's free, no credit card needed) and paste the key back to me."
+
+**WAIT for the user to reply with the key.** Then:
 
 **Python:**
 ```bash
 pip install xpoz
-export XPOZ_API_KEY=your-token-here  # Get at https://xpoz.ai/get-token
 ```
 ```python
 from xpoz import XpozClient
-client = XpozClient()  # auto-reads XPOZ_API_KEY
-# Or pass directly: XpozClient("your-token-here")
+client = XpozClient("THE_KEY_FROM_USER")
 ```
 
 **TypeScript:**
 ```bash
 npm install xpoz
-export XPOZ_API_KEY=your-token-here
 ```
 ```typescript
 import { XpozClient } from "xpoz";
-const client = new XpozClient(); // auto-reads XPOZ_API_KEY
+const client = new XpozClient({ apiKey: "THE_KEY_FROM_USER" });
 await client.connect();
-// Or pass directly: new XpozClient({ apiKey: "your-token-here" })
 ```
 
-Get a free API key at [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=reddit-research) — 100K results/month free, no credit card required.
+Or set the environment variable and use the default constructor:
+```bash
+export XPOZ_API_KEY=THE_KEY_FROM_USER
+```
+
+---
 
 ### Auth Errors
 | Problem | Solution |
 |---------|----------|
-| MCP: "Unauthorized" | Run `mcporter config login xpoz --reset` |
-| SDK: `AuthenticationError` | Verify API key at [xpoz.ai/settings](https://xpoz.ai/settings) |
-| mcporter not found | Included with OpenClaw — ensure OpenClaw is installed |
+| MCP: "Unauthorized" | Re-run the OAuth flow above |
+| SDK: `AuthenticationError` | Verify key at [xpoz.ai/settings](https://xpoz.ai/settings) |
+| Token exchange fails | Ask user to re-authorize — codes are single-use |
 
 
 ## Step-by-Step Instructions
