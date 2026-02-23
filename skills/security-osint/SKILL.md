@@ -1,24 +1,24 @@
 ---
 name: security-osint
 version: 2026-02-23
-description: Monitor social platforms for security threats, vulnerability discussions, and breach intelligence using Xpoz. Use when asked to "find CVE discussions", "security threat monitoring", "OSINT social media", "vulnerability intelligence", or "breach mentions on Twitter/Reddit".
+description: Monitor social platforms for security threats, vulnerability discussions, and breach intelligence using Xpoz. Use when asked to "find CVE discussions", "security threat monitoring", "OSINT social media", "vulnerability intelligence", "breach mentions", or "threat intel from Twitter/Reddit".
 ---
 
 # Security OSINT
 
 ## Overview
 
-Monitor Twitter/X and Reddit for security-relevant discussions: CVE mentions, vulnerability disclosures, breach reports, exploit chatter, and threat actor activity. Get early warning signals from security researcher communities before formal advisories.
+Monitor Twitter/X and Reddit for security-related discussions — CVE mentions, zero-day chatter, breach reports, exploit code sharing, and emerging threats. Provides early warning intelligence often 24-48 hours before formal advisories.
 
 ## When to Use
 
 Activate when the user asks:
 - "Find discussions about [CVE-XXXX-XXXXX] on Twitter"
-- "Monitor social media for [vulnerability/product] security issues"
-- "What are security researchers saying about [TOPIC]?"
-- "OSINT check for [software/company] breaches"
-- "Track threat intelligence on social media"
-- "Early warning for [technology] vulnerabilities"
+- "What's the security community saying about [VULNERABILITY]?"
+- "Monitor social media for [SOFTWARE] vulnerabilities"
+- "OSINT research on [THREAT ACTOR/CAMPAIGN]"
+- "Are there breach reports about [COMPANY] on social media?"
+- "Threat intelligence from Twitter and Reddit"
 
 ## Prerequisites
 
@@ -29,22 +29,38 @@ Activate when the user asks:
 ### Step 1: Parse the Request
 
 Extract:
-- **Target**: CVE ID, product name, company, or threat type
+- **Target**: CVE ID, software name, company, threat actor, or general topic
 - **Scope**: specific vulnerability vs broad monitoring
-- **Platforms**: Twitter + Reddit (both recommended for security)
-- **Time period**: default last 7 days (security moves fast)
+- **Platforms** (default: Twitter + Reddit — where security researchers are most active)
+- **Time period** (default: last 7 days; use 24-48h for breaking threats)
 
 Build targeted queries:
-- Specific CVE: `"CVE-2026-1234" OR "CVE20261234"`
-- Product vulnerability: `"Log4j" AND ("vulnerability" OR "exploit" OR "CVE" OR "RCE" OR "patch")`
-- Breach monitoring: `"[Company]" AND ("breach" OR "leaked" OR "hacked" OR "compromised" OR "data leak")`
-- Threat actor: `"[Actor name]" AND ("attack" OR "campaign" OR "APT" OR "malware")`
+
+**For a specific CVE:**
+```
+"CVE-2026-1234" OR "CVE202612345"
+```
+
+**For a software vulnerability:**
+```
+("[SOFTWARE]" AND ("vulnerability" OR "vuln" OR "exploit" OR "RCE" OR "zero-day" OR "0day" OR "CVE"))
+```
+
+**For breach monitoring:**
+```
+("[COMPANY]" AND ("breach" OR "hacked" OR "leak" OR "data leak" OR "compromised" OR "ransomware"))
+```
+
+**For threat actor tracking:**
+```
+("[THREAT ACTOR]" OR "[KNOWN ALIASES]") AND ("attack" OR "campaign" OR "APT" OR "malware")
+```
 
 ### Step 2: Fetch Security Discussions
 
 #### Via MCP
 
-**Twitter — security researcher community:**
+**Twitter (security researchers are very active here):**
 ```
 Call getTwitterPostsByKeywords:
   query: "<security query>"
@@ -54,15 +70,15 @@ Call getTwitterPostsByKeywords:
   language: "en"
 ```
 
-**Twitter — find security researchers discussing this:**
+**Find security researchers discussing the topic:**
 ```
 Call getTwitterUsersByKeywords:
   query: "<security query>"
-  fields: ["id", "username", "name", "description", "followersCount", "relevantTweetsCount", "verified"]
+  fields: ["id", "username", "name", "description", "followersCount", "relevantTweetsCount", "relevantTweetsLikesSum", "verified"]
   startDate: "<7 days ago>"
 ```
 
-**Reddit — detailed technical discussions:**
+**Reddit (r/netsec, r/cybersecurity, r/hacking, etc.):**
 ```
 Call getRedditPostsByKeywords:
   query: "<security query>"
@@ -70,7 +86,7 @@ Call getRedditPostsByKeywords:
   startDate: "<7 days ago>"
 ```
 
-**CRITICAL:** Each call returns an `operationId` — poll `checkOperationStatus` until "completed".
+**CRITICAL:** Poll `checkOperationStatus` with each `operationId` until "completed".
 
 #### Via Python SDK
 
@@ -79,34 +95,38 @@ from xpoz import XpozClient
 
 client = XpozClient()
 
-# Search Twitter for CVE discussions
+cve_id = "CVE-2026-1234"
+query = f'"{cve_id}"'
+
+# Twitter - security researcher chatter
 twitter_posts = client.twitter.search_posts(
-    '"CVE-2026-1234" OR "CVE20261234"',
+    query,
     start_date="2026-02-16",
     end_date="2026-02-23",
-    fields=["id", "text", "author_username", "created_at_date", "like_count", "retweet_count"]
+    fields=["id", "text", "author_username", "created_at_date", "like_count", "retweet_count", "impression_count"]
 )
 
-# Find security researchers who posted about it
+# Find researchers discussing it
 researchers = client.twitter.get_users_by_keywords(
-    '"CVE-2026-1234"',
+    query,
     start_date="2026-02-16",
     fields=["username", "name", "description", "followers_count", "relevant_tweets_count", "verified"]
 )
 
-# Search Reddit (r/netsec, r/cybersecurity, etc.)
+# Reddit - deeper technical discussions
 reddit_posts = client.reddit.search_posts(
-    '"CVE-2026-1234"',
+    query,
     start_date="2026-02-16",
-    fields=["id", "title", "text", "author_username", "score", "num_comments", "subreddit", "url"]
+    fields=["id", "title", "text", "author_username", "created_at_date", "score", "num_comments", "subreddit", "url"]
 )
 
-# For broad product monitoring
-product_vulns = client.twitter.search_posts(
-    '"Apache" AND ("vulnerability" OR "CVE" OR "exploit" OR "RCE" OR "0day")',
-    start_date="2026-02-16",
-    fields=["id", "text", "author_username", "created_at_date", "like_count"]
-)
+print(f"Twitter: {twitter_posts.pagination.total_rows} posts")
+print(f"Reddit: {reddit_posts.pagination.total_rows} posts")
+print(f"Researchers: {researchers.pagination.total_rows} users")
+
+# Export for analysis
+twitter_csv = twitter_posts.export_csv()
+reddit_csv = reddit_posts.export_csv()
 
 client.close()
 ```
@@ -119,117 +139,111 @@ import { XpozClient } from "xpoz";
 const client = new XpozClient();
 await client.connect();
 
-const twitterPosts = await client.twitter.searchPosts('"CVE-2026-1234"', {
+const cveId = "CVE-2026-1234";
+
+const twitterPosts = await client.twitter.searchPosts(`"${cveId}"`, {
   startDate: "2026-02-16",
   endDate: "2026-02-23",
   fields: ["id", "text", "authorUsername", "createdAtDate", "likeCount", "retweetCount"],
 });
 
-const redditPosts = await client.reddit.searchPosts('"CVE-2026-1234"', {
+const redditPosts = await client.reddit.searchPosts(`"${cveId}"`, {
   startDate: "2026-02-16",
-  fields: ["id", "title", "text", "score", "numComments", "subreddit", "url"],
+  fields: ["id", "title", "text", "score", "numComments", "subreddit"],
 });
 
 await client.close();
 ```
 
-### Step 3: Analyze Security Intelligence
+### Step 3: Analyze Threat Intelligence
 
 **Timeline Reconstruction:**
 - Sort all posts chronologically
-- Identify: first public mention, researcher disclosure, vendor response, patch availability
-- Note the gap between social media chatter and formal advisory (often 24-72 hours)
+- Identify the first public mention (potential disclosure date)
+- Track how discussion evolved (initial report → PoC → exploitation → patches)
+
+**Severity Assessment (from social signals):**
+| Signal | Indicates |
+|--------|-----------|
+| High engagement + rapid spread | Critical/actively exploited |
+| Security researchers sharing PoC code | Weaponization in progress |
+| Vendor accounts responding | Acknowledged, patch likely coming |
+| Low volume, technical-only discussion | Early stage or low severity |
+| Mentions of "in the wild" / "actively exploited" | Immediate action needed |
 
 **Source Credibility:**
-- Verified security researchers (check bio for "security", "pentester", "CISO", "researcher")
-- High-follower accounts in security community
-- Reddit posts in security-specific subreddits (r/netsec, r/cybersecurity, r/blueteam, r/redteam)
-- Cross-reference: same finding reported by multiple independent researchers = higher confidence
+- Verified security researchers (check bio for "security", "pentest", "CISO", "CVE")
+- High follower count in security niche
+- Posted from known security company accounts
+- Cross-referenced across multiple independent sources
 
-**Severity Assessment:**
-From social signals, assess:
-- **Volume**: how many people are discussing it
-- **Velocity**: how fast mentions are growing
-- **Expert engagement**: are known researchers amplifying it
-- **Exploit availability**: mentions of PoC, exploit code, "in the wild"
-- **Impact scope**: which products/versions affected based on discussion
-
-**Categorize findings:**
-| Category | Indicators |
-|----------|-----------|
-| 🔴 Critical | Active exploitation, PoC available, wide impact, high engagement |
-| 🟠 High | Researcher disclosure, pre-patch, significant discussion |
-| 🟡 Medium | Early chatter, limited PoC, vendor aware |
-| 🟢 Low | Theoretical, low engagement, patched |
+**Key Information to Extract:**
+- Affected software/versions
+- Attack vector (remote/local, authentication required?)
+- Exploit availability (PoC published?)
+- Patch status (fixed? workaround available?)
+- Active exploitation reports
+- IoCs (indicators of compromise) shared
 
 ### Step 4: Generate Report
 
 ```
-## Security OSINT Report: [TARGET]
-**Period:** [date range] | **Sources:** Twitter, Reddit
+## Security Intelligence: [TARGET]
+**Period:** [date range] | **Sources:** Twitter ([X] posts), Reddit ([X] posts)
 
-### Executive Summary
-[2-3 sentences: what was found, severity level, recommended action]
-
-### Severity: 🔴 CRITICAL / 🟠 HIGH / 🟡 MEDIUM / 🟢 LOW
+### ⚠️ Threat Summary
+**Severity:** Critical / High / Medium / Low
+**Status:** [Active exploitation / PoC available / Discussion only / Patched]
+**First seen:** [date of earliest social mention]
 
 ### Timeline
-| Date | Event | Source |
-|------|-------|--------|
-| Feb 16 | First mention by @researcher | Twitter |
-| Feb 17 | PoC published on GitHub (linked in tweet) | Twitter |
-| Feb 18 | Discussion in r/netsec (456 upvotes) | Reddit |
-| Feb 19 | Vendor advisory released | Twitter |
+| Date | Source | Event |
+|------|--------|-------|
+| Feb 16 | Twitter @researcher | First public mention of vulnerability |
+| Feb 17 | Reddit r/netsec | Technical analysis posted |
+| Feb 18 | Twitter @vendor | Patch announced |
 
-### Key Findings
-1. **[Finding]**: [Details with source quotes]
-2. **[Finding]**: [Details with source quotes]
+### Technical Details (from social sources)
+- **Affected:** [software, versions]
+- **Vector:** [remote/local, auth requirements]
+- **Impact:** [RCE, data leak, DoS, etc.]
+- **Exploit:** [PoC available? Where?]
+- **Patch:** [Available? Version? Workaround?]
 
-### Notable Sources
-| Researcher | Platform | Followers | Credibility |
-|-----------|----------|-----------|-------------|
-| @security_researcher | Twitter | 45K | ✅ Known researcher |
-| u/netsec_analyst | Reddit | — | r/netsec regular |
+### Key Voices
+| Researcher | Followers | Posts | Credibility |
+|-----------|-----------|-------|-------------|
+| @security_expert | 50K | 3 | High (CISO at [company]) |
+| ... | ... | ... | ... |
 
-### Social Signal Metrics
-- **Twitter mentions:** [count]
-- **Reddit posts:** [count] (top subreddits: r/netsec, r/cybersecurity)
-- **First seen:** [date/time]
-- **Peak activity:** [date/time]
-- **Sentiment:** [Panic/Concern/Informational/Dismissive]
+### Notable Posts
+> "Actual quote from security researcher" — @username (❤️ X, 🔁 X)
+
+### Subreddit Activity
+| Subreddit | Posts | Top Thread |
+|-----------|-------|-----------|
+| r/netsec | X | "Title..." (⬆️ X, 💬 X) |
+| r/cybersecurity | X | "Title..." |
 
 ### Recommended Actions
-1. [Immediate action if critical]
-2. [Monitoring recommendation]
-3. [Patching/mitigation guidance from community discussion]
-
-### Raw Intelligence
-[Top 10 most relevant posts with full text, author, and engagement metrics]
+1. [Immediate: patch/mitigate if affected]
+2. [Monitor: watch for exploitation reports]
+3. [Investigate: check logs for IoCs]
 ```
 
 ## Example Prompts
 
-- "Find all Twitter and Reddit discussions about CVE-2026-1234"
-- "Monitor social media for Apache Struts vulnerabilities this week"
-- "OSINT check: any breach mentions for Acme Corp?"
-- "What are security researchers saying about the new Chrome zero-day?"
-- "Track ransomware group activity on Twitter in the last 30 days"
-
-## Security-Relevant Subreddits
-
-| Subreddit | Focus |
-|-----------|-------|
-| r/netsec | Technical security research |
-| r/cybersecurity | General cybersecurity news |
-| r/blueteam | Defensive security |
-| r/redteam | Offensive security |
-| r/malware | Malware analysis |
-| r/ReverseEngineering | Binary analysis |
-| r/AskNetsec | Security Q&A |
+- "What's the security community saying about CVE-2026-1234?"
+- "Monitor Twitter for Log4Shell discussions in the last 48 hours"
+- "OSINT: find breach reports about [Company] on social media"
+- "Are there any zero-day discussions about Chrome this week?"
+- "Track discussions about the latest ransomware campaign on Twitter and Reddit"
+- "Find security researchers talking about MCP server vulnerabilities"
 
 ## Notes
 
-- Social media often surfaces vulnerability details **24-72 hours before** formal CVE publication
-- Cross-reference Twitter + Reddit for higher confidence — single-source findings need verification
+- Security discussions on Twitter often precede formal CVE publication by 24-48 hours
+- Reddit r/netsec and r/cybersecurity provide technical depth; Twitter provides speed
+- Use `relevantTweetsCount` from user search to find who's most actively discussing a threat
+- Be careful with sensitive information — don't amplify exploit code or IoCs unnecessarily
 - Free tier: 100K results/month at [xpoz.ai](https://xpoz.ai?utm_source=github&utm_medium=agent-skills&utm_campaign=security-osint)
-- For ongoing monitoring, combine with scheduled runs (cron + this skill)
