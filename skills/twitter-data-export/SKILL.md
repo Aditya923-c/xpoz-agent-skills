@@ -22,45 +22,91 @@ Activate when the user asks:
 
 ## Setup & Authentication
 
-Before fetching data, verify Xpoz access is configured. Try them in order:
+Before fetching data, verify Xpoz access is configured. Try these in order:
 
-### Check 1: MCP Server (preferred)
-If you have MCP tool access, check if `xpoz` tools are available (e.g., `getTwitterPostsByKeywords`). If yes, authentication is already handled — skip to Step 1.
+### Check 1: MCP Server (preferred for AI agents)
 
-### Check 2: SDK via Environment Variable
+If you have MCP tool access, test if Xpoz is already authenticated:
+
 ```bash
-echo $XPOZ_API_KEY
+mcporter call xpoz.checkAccessKeyStatus
 ```
-If set, the SDK will authenticate automatically:
+
+- If `hasAccessKey: true` → **Xpoz is ready.** Skip to Step 1.
+- If it fails or the server isn't configured → set it up:
+
+**Add the server:**
+```bash
+mcporter config add xpoz https://mcp.xpoz.ai/mcp --auth oauth
+```
+
+**Authenticate (local machine with browser):**
+```bash
+mcporter config login xpoz
+```
+This opens the browser for Google sign-in. Tell the user:
+> "A browser window should open — just sign in with your Google account and click Authorize."
+
+**Authenticate (remote/headless server):**
+If there's no browser, generate an OAuth URL and send it to the user:
+```bash
+mcporter config login xpoz
+```
+Copy the authorization URL from the output, send it to the user, and wait for them to paste back the authorization code.
+
+**Verify:**
+```bash
+mcporter call xpoz.checkAccessKeyStatus
+```
+
+For **Claude Code** users, Xpoz can also be added to `~/.claude.json`:
+```json
+{
+  "mcpServers": {
+    "xpoz": {
+      "url": "https://mcp.xpoz.ai/mcp",
+      "transport": "http-stream"
+    }
+  }
+}
+```
+Authentication is handled via OAuth on first use — no API keys needed in the config.
+
+### Check 2: SDK (for coding tasks)
+
+Install the SDK and set your API key:
+
+**Python:**
+```bash
+pip install xpoz
+export XPOZ_API_KEY=your-token-here  # Get at https://xpoz.ai/get-token
+```
 ```python
 from xpoz import XpozClient
 client = XpozClient()  # auto-reads XPOZ_API_KEY
+# Or pass directly: XpozClient("your-token-here")
 ```
 
-### Check 3: Nothing Configured
-If neither MCP nor env var is available, ask the user to:
-1. Get a free API key at [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=twitter-data-export) (100K results/month free)
-2. Then EITHER:
-   - **Set env var:** `export XPOZ_API_KEY=<their-key>` and use the SDK
-   - **Configure MCP:** Add to `~/.claude.json` (or agent's MCP config):
-     ```json
-     {
-       "mcpServers": {
-         "xpoz": {
-           "url": "https://mcp.xpoz.ai/mcp",
-           "transport": "http-stream",
-           "headers": { "Authorization": "Bearer <their-key>" }
-         }
-       }
-     }
-     ```
-   - **Pass directly:** `XpozClient("<their-key>")` in Python or `new XpozClient({ apiKey: "<their-key>" })` in TypeScript
+**TypeScript:**
+```bash
+npm install xpoz
+export XPOZ_API_KEY=your-token-here
+```
+```typescript
+import { XpozClient } from "xpoz";
+const client = new XpozClient(); // auto-reads XPOZ_API_KEY
+await client.connect();
+// Or pass directly: new XpozClient({ apiKey: "your-token-here" })
+```
+
+Get a free API key at [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=twitter-data-export) — 100K results/month free, no credit card required.
 
 ### Auth Errors
-If you get `AuthenticationError` or 401 responses:
-- Verify the API key is valid at [xpoz.ai/settings](https://xpoz.ai/settings)
-- Check the key hasn't expired
-- Ensure no extra whitespace in the key
+| Problem | Solution |
+|---------|----------|
+| MCP: "Unauthorized" | Run `mcporter config login xpoz --reset` |
+| SDK: `AuthenticationError` | Verify API key at [xpoz.ai/settings](https://xpoz.ai/settings) |
+| mcporter not found | Included with OpenClaw — ensure OpenClaw is installed |
 
 
 ## Step-by-Step Instructions

@@ -48,13 +48,18 @@ Add to your `~/.claude.json`:
   "mcpServers": {
     "xpoz": {
       "url": "https://mcp.xpoz.ai/mcp",
-      "transport": "http-stream",
-      "headers": {
-        "Authorization": "Bearer YOUR_XPOZ_API_KEY"
-      }
+      "transport": "http-stream"
     }
   }
 }
+```
+
+Authentication is handled via OAuth on first use — no API keys needed in the config. Just sign in with your Google account when prompted.
+
+If using **mcporter** (included with OpenClaw):
+```bash
+mcporter config add xpoz https://mcp.xpoz.ai/mcp --auth oauth
+mcporter config login xpoz
 ```
 
 #### Option B: Python SDK (recommended for coding tasks)
