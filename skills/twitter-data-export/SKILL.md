@@ -67,7 +67,9 @@ Call getTwitterPostsByAuthor:
 
 **CRITICAL: Async Pattern** — calls return an `operationId`. Call `checkOperationStatus` with that ID and poll until "completed" (up to 8 retries, ~5 seconds apart).
 
-**CSV Export** — The response includes a `dataDumpExportOperationId`. Call `checkOperationStatus` with it to get an S3 download URL for the complete dataset as CSV.
+**CSV Export (two options):**
+1. Pass `responseType="csv"` in the original call to get a CSV download directly
+2. Or use the `dataDumpExportOperationId` from the response — call `checkOperationStatus` with it to get an S3 download URL for the complete dataset
 
 #### Via Python SDK
 
