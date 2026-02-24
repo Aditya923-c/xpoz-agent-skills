@@ -72,7 +72,7 @@ export XPOZ_API_KEY=your-api-key
 #### Option C: TypeScript SDK
 
 ```bash
-npm install xpoz
+npm install @xpoz/xpoz
 export XPOZ_API_KEY=your-api-key
 ```
 

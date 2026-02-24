@@ -186,10 +186,10 @@ client = XpozClient("THE_KEY_FROM_USER")
 
 **TypeScript:**
 ```bash
-npm install xpoz
+npm install @xpoz/xpoz
 ```
 ```typescript
-import { XpozClient } from "xpoz";
+import { XpozClient } from "@xpoz/xpoz";
 const client = new XpozClient({ apiKey: "THE_KEY_FROM_USER" });
 await client.connect();
 ```
@@ -297,7 +297,7 @@ client.close()
 #### Via TypeScript SDK
 
 ```typescript
-import { XpozClient } from "xpoz";
+import { XpozClient } from "@xpoz/xpoz";
 
 const client = new XpozClient();
 await client.connect();
