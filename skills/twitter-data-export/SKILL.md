@@ -1,6 +1,6 @@
 ---
 name: twitter-data-export
-version: 2026-02-23
+version: 2026-02-24
 description: Export Twitter/X data to CSV for analysis using Xpoz. Search by keywords, author, date range, and download complete datasets (up to 500K rows). Use when asked to "export tweets", "download Twitter data", "get tweets as CSV", "Twitter dataset", or "bulk tweet download".
 ---
 

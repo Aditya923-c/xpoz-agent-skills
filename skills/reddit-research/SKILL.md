@@ -1,6 +1,6 @@
 ---
 name: reddit-research
-version: 2026-02-23
+version: 2026-02-24
 description: Search and analyze Reddit discussions for market research, product feedback, and community insights using Xpoz. Use when asked to "search Reddit", "what does Reddit think about X", "Reddit feedback on X", "subreddit analysis", or "Reddit market research".
 ---
 

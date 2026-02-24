@@ -1,6 +1,6 @@
 ---
 name: social-sentiment-analyzer
-version: 2026-02-23
+version: 2026-02-24
 description: Analyze brand or topic sentiment across Twitter, Reddit, and Instagram using Xpoz. Classifies posts as positive/neutral/negative, extracts recurring themes, and generates a sentiment report. Use when asked for "sentiment analysis", "what are people saying about X", "brand sentiment", or "social media opinion on X".
 ---
 

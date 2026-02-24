@@ -1,6 +1,6 @@
 ---
 name: competitive-intel
-version: 2026-02-23
+version: 2026-02-24
 description: Compare brands and products across social media — share of voice, sentiment, positioning, and audience overlap using Xpoz. Use when asked to "compare brands", "competitive analysis", "share of voice", "brand vs brand", or "competitive intelligence".
 ---
 

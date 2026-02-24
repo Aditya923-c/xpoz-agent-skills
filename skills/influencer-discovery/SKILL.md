@@ -1,6 +1,6 @@
 ---
 name: influencer-discovery
-version: 2026-02-23
+version: 2026-02-24
 description: Find and rank influencers by niche, engagement, and authenticity using Xpoz. Searches Twitter, Instagram, and Reddit for active voices in any topic. Use when asked to "find influencers", "discover thought leaders", "who's talking about X", "influencer research", or "find KOLs".
 ---
 

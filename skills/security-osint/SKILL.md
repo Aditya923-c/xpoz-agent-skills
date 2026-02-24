@@ -1,6 +1,6 @@
 ---
 name: security-osint
-version: 2026-02-23
+version: 2026-02-24
 description: Monitor social platforms for security threats, vulnerability discussions, and breach intelligence using Xpoz. Use when asked to "find CVE discussions", "security threat monitoring", "OSINT social media", "vulnerability intelligence", "breach mentions", or "threat intel from Twitter/Reddit".
 ---
 
