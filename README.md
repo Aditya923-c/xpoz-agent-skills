@@ -129,7 +129,7 @@ If you experience issues, try these steps:
 - Look for community forums or discussion boards related to social media automation and AI agents.
 - Learn about Twitter API and Reddit API for better use of advanced features.
 - Explore Claude Code and Codex CLI documentation if you want to extend or customize skills.
-- Use [TweetClaw](https://github.com/Xquik-dev/tweetclaw) when an OpenClaw plugin install is a better fit than copying skill folders: `openclaw plugins install @xquik/tweetclaw` covers search tweets, search tweet replies, follower export, media workflows, monitors, webhooks, and approval-reviewed post or reply actions.
+- Use [TweetClaw](https://github.com/Xquik-dev/tweetclaw) when an OpenClaw plugin install is a better fit than copying skill folders: `openclaw plugins install npm:@xquik/tweetclaw` covers search tweets, search tweet replies, follower export, media workflows, monitors, webhooks, and approval-reviewed post or reply actions.
 
 ---
 
